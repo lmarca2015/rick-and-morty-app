@@ -41,6 +41,14 @@ class DatabaseHelper {
     );
   }
 
+  Future<List<CharacterModel>> getLocalCharacters() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('characters');
+    return List.generate(maps.length, (i) {
+      return CharacterModel.fromJson(maps[i]);
+    });
+  }
+
   Future<List<CharacterModel>> getCharacters() async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
@@ -64,5 +72,20 @@ class DatabaseHelper {
     final db = await database;
     await db.update('characters', {'isFavorite': isFavorite ? 1 : 0},
         where: 'id = ?', whereArgs: [characterId]);
+  }
+
+  Future<CharacterModel?> getCharacterById(int id) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'characters',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.isNotEmpty) {
+      return CharacterModel.fromJson(maps.first);
+    } else {
+      return null;
+    }
   }
 }

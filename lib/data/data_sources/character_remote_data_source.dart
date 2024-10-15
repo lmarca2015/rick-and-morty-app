@@ -1,17 +1,17 @@
 import 'package:rick_and_morty_app/api/rick_morty_api.dart';
 import 'package:rick_and_morty_app/data/models/character_model.dart';
 
+import '../../domain/entities/character.dart';
 import 'database_helper.dart';
 
 abstract class CharacterRemoteDataSource {
-  Future<List<CharacterModel>> fetchCharacters(int page);
-  Future<List<CharacterModel>> fetchCharactersWithName(String name);
+  Future<List<Character>> fetchCharacters(int page);
+  Future<List<Character>> fetchCharactersWithName(String name);
 
   Future<List<CharacterModel>> fetchLocalCharacters();
 }
 
 class CharacterRemoteDataSourceImpl implements CharacterRemoteDataSource {
-
   final DatabaseHelper _databaseHelper = DatabaseHelper();
 
   @override

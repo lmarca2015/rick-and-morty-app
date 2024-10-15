@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rick_and_morty_app/domain/entities/character.dart';
 
 import '../../data/data_sources/database_helper.dart';
+import '../../data/models/character_model.dart';
 
 class DetailScreen extends StatefulWidget {
   final Character character;
@@ -14,28 +15,44 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  late bool isFavorite;
+  late Future<bool> _isFavoriteFuture;
 
-    @override
+  @override
   void initState() {
     super.initState();
-    isFavorite = widget.character.isFavorite;
+    _isFavoriteFuture = _loadFavoriteStatus();
   }
 
-  void toggleFavorite() {
+  Future<bool> _loadFavoriteStatus() async {
+    final databaseHelper = DatabaseHelper();
+    CharacterModel? character =
+        await databaseHelper.getCharacterById(widget.character.id);
+    return character?.isFavorite ?? false;
+  }
+
+  void toggleFavorite(bool isFavorite) async {
+    final newStatus = !isFavorite;
+
     setState(() {
-      isFavorite = !isFavorite;
+      _isFavoriteFuture = Future.value(newStatus);
     });
 
     final databaseHelper = DatabaseHelper();
-    databaseHelper.insertCharacter(widget.character);
-    databaseHelper.updateFavorite(widget.character.id, isFavorite);
+
+    final existingCharacter =
+        await databaseHelper.getCharacterById(widget.character.id);
+
+    if (existingCharacter == null) {
+      await databaseHelper.insertCharacter(widget.character);
+    }
+
+    await databaseHelper.updateFavorite(widget.character.id, newStatus);
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-  
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -70,17 +87,28 @@ class _DetailScreenState extends State<DetailScreen> {
                 children: [
                   buildCard('Gender', widget.character.gender),
                   buildCard('Species', widget.character.species),
-                  buildCard('Status', widget.character.status)
+                  buildCard('Status', widget.character.status),
                 ],
               ),
             ),
-            ElevatedButton(
-                    onPressed:
-                        toggleFavorite,
+            FutureBuilder<bool>(
+              future: _isFavoriteFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return const Text('Error loading favorite status');
+                } else {
+                  final isFavorite = snapshot.data ?? false;
+                  return ElevatedButton(
+                    onPressed: () => toggleFavorite(isFavorite),
                     child: Text(isFavorite
                         ? 'Remove from Favorites'
                         : 'Add to Favorites'),
-                  ),
+                  );
+                }
+              },
+            ),
           ],
         ),
       ),
@@ -98,7 +126,7 @@ Widget buildCard(String key, String value) {
         children: [
           Text(key),
           const SizedBox(height: 2),
-          Text(value, style: const TextStyle(overflow: TextOverflow.ellipsis))
+          Text(value, style: const TextStyle(overflow: TextOverflow.ellipsis)),
         ],
       ),
     ),

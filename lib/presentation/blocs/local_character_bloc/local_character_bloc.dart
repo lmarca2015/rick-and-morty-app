@@ -16,7 +16,7 @@ class LocalCharacterBloc extends Bloc<LocalCharacterEvent, LocalCharacterState> 
 
       try {
         final characters = await getCharacters();
-
+  
         emit(LocalCharacterLoaded(characters));
       } catch (e) {
         emit(CharactersError(e.toString()));

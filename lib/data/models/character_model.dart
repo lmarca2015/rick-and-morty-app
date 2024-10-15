@@ -24,7 +24,8 @@ class CharacterModel extends Character {
       image: json['image'], 
       type: json['type'],
       url: json['url'],
-      created: json['created']
+      created: json['created'],
+      isFavorite: json['isFavorite'] == 1 ? true : false
     );
   }
 }
