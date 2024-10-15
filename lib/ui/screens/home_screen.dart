@@ -44,7 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 showSearch(context: context, delegate: SearchCharacter());
               },
-              icon: const Icon(Icons.search))
+              icon: const Icon(Icons.search)),
+          IconButton(
+              onPressed: () {
+                context.go('/local');
+              },
+              icon: const Icon(Icons.favorite))
         ],
       ),
       body: BlocBuilder<CharacterBloc, CharacterState>(
@@ -69,8 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       final character = state.characters[index];
                       return GestureDetector(
                         onTap: () {
-                          //context.go('/detail', extra: character);
-                          context.go('/local');
+                          context.go('/detail', extra: character);
                         },
                         child: Container(
                           clipBehavior: Clip.hardEdge,

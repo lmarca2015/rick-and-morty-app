@@ -43,7 +43,12 @@ class DatabaseHelper {
 
   Future<List<CharacterModel>> getCharacters() async {
     final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('characters');
+    final List<Map<String, dynamic>> maps = await db.query(
+      'characters',
+      where: 'isFavorite = ?',
+      whereArgs: [1],
+    );
+
     return List.generate(maps.length, (i) {
       return CharacterModel.fromJson(maps[i]);
     });
@@ -53,5 +58,11 @@ class DatabaseHelper {
     final db = await database;
     await db.insert('characters', character.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> updateFavorite(int characterId, bool isFavorite) async {
+    final db = await database;
+    await db.update('characters', {'isFavorite': isFavorite ? 1 : 0},
+        where: 'id = ?', whereArgs: [characterId]);
   }
 }
