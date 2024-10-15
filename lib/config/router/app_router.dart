@@ -1,8 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rick_and_morty_app/presentation/blocs/searchcharacter/search_character_bloc.dart';
+import 'package:rick_and_morty_app/presentation/blocs/local_character_bloc/local_character_bloc.dart';
+import 'package:rick_and_morty_app/presentation/blocs/search_character/search_character_bloc.dart';
 import 'package:rick_and_morty_app/ui/screens/detail_screen.dart';
 import 'package:rick_and_morty_app/ui/screens/home_screen.dart';
+import 'package:rick_and_morty_app/ui/screens/local_characters_screen.dart';
 
 import '../../data/models/character_model.dart';
 import '../../di/injection_container.dart';
@@ -26,6 +28,16 @@ final appRouter = GoRouter(initialLocation: '/', routes: <RouteBase>[
       return BlocProvider(
         create: (context) => sl<SearchCharacterBloc>(),
         child: DetailScreen(character: character),
+      );
+    },
+  ),
+  
+  GoRoute(
+    path: '/local',
+    builder: (context, state) {
+      return BlocProvider(
+        create: (context) => sl<LocalCharacterBloc>(),
+        child: const LocalCharactersScreen(),
       );
     },
   ),

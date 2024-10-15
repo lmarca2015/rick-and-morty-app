@@ -13,8 +13,13 @@ class CharacterRepositoryImpl implements CharacterRepository {
     return await remoteDataSource.fetchCharacters(page);
   }
 
-    @override
+  @override
   Future<List<Character>> fetchCharactersWithName(String name) async {
     return await remoteDataSource.fetchCharactersWithName(name);
+  }
+
+  @override
+  Future<List<Character>> fetchLocalCharacters() async {
+    return await remoteDataSource.fetchLocalCharacters();
   }
 }

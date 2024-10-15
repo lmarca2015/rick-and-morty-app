@@ -11,7 +11,8 @@ class Character {
         required this.gender,
         required this.image,
         required this.url,
-        required this.created
+        required this.created,
+        this.isFavorite = false
     });
 
     int id;
@@ -23,6 +24,7 @@ class Character {
     String image;
     String url;
     String created;
+    bool isFavorite;
 
     factory Character.fromJson(String str) => Character.fromMap(json.decode(str));
 
@@ -37,7 +39,8 @@ class Character {
         gender: json["gender"],
         image: json["image"],
         url: json["url"],
-        created: json["created"]
+        created: json["created"],
+        isFavorite: json['isFavorite'] == 1
     );
 
     Map<String, dynamic> toMap() => {
@@ -49,6 +52,7 @@ class Character {
         "gender": gender,
         "image": image,
         "url": url,
-        "created": created
+        "created": created,
+        'isFavorite': isFavorite ? 1 : 0
     };
 }

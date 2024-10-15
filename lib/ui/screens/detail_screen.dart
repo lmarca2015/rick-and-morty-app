@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:rick_and_morty_app/domain/entities/character.dart';
 
 class DetailScreen extends StatelessWidget {
+
   final Character character;
   const DetailScreen({super.key, required this.character});
 
@@ -16,7 +17,7 @@ class DetailScreen extends StatelessWidget {
         title: Text(character.name),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
+          onPressed: () async {
             context.go('/');
           },
         ),

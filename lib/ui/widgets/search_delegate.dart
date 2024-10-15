@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rick_and_morty_app/presentation/blocs/searchcharacter/search_character_bloc.dart';
+import 'package:rick_and_morty_app/presentation/blocs/search_character/search_character_bloc.dart';
 
 import '../../di/injection_container.dart';
 

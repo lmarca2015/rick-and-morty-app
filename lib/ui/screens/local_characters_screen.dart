@@ -2,33 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:rick_and_morty_app/ui/widgets/search_delegate.dart';
-import '../../presentation/blocs/character_bloc/character_bloc.dart';
+import '../../presentation/blocs/local_character_bloc/local_character_bloc.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class LocalCharactersScreen extends StatefulWidget {
+  const LocalCharactersScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<LocalCharactersScreen> createState() => _LocalCharactersScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _LocalCharactersScreenState extends State<LocalCharactersScreen> {
   late ScrollController scrollController;
-  late int currentPage = 1;
 
   @override
   void initState() {
     scrollController = ScrollController();
     super.initState();
-    scrollController.addListener(() async {
-      if (scrollController.position.pixels ==
-          scrollController.position.maxScrollExtent) {
-        currentPage++;
-        context.read<CharacterBloc>().add(FetchCharactersEvent(currentPage));
-      }
-    });
 
-    context.read<CharacterBloc>().add(FetchCharactersEvent(currentPage));
+    context.read<LocalCharacterBloc>().add(FetchLocalCharactersEvent());
   }
 
   @override
@@ -37,21 +28,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Clean Architecture Example'),
+        title: const Text('Listado de favoritos'),
         centerTitle: true,
-        actions: [
-          IconButton(
-              onPressed: () {
-                showSearch(context: context, delegate: SearchCharacter());
-              },
-              icon: const Icon(Icons.search))
-        ],
+        leading: IconButton(
+            onPressed: () {
+              context.go('/');
+            },
+            icon: const Icon(Icons.arrow_back)),
       ),
-      body: BlocBuilder<CharacterBloc, CharacterState>(
+      body: BlocBuilder<LocalCharacterBloc, LocalCharacterState>(
         builder: (context, state) {
           if (state is Loading) {
             return const Center(child: CircularProgressIndicator());
-          } else if (state is CharacterLoaded) {
+          } else if (state is LocalCharacterLoaded) {
             return Column(
               children: [
                 Expanded(
@@ -69,8 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       final character = state.characters[index];
                       return GestureDetector(
                         onTap: () {
-                          //context.go('/detail', extra: character);
-                          context.go('/local');
+                          context.go('/detail', extra: character);
                         },
                         child: Container(
                           clipBehavior: Clip.hardEdge,

@@ -10,7 +10,8 @@ class CharacterModel extends Character {
     required super.gender,
     required super.image,
     required super.url,
-    required super.created
+    required super.created,
+    super.isFavorite = false
   });
 
   factory CharacterModel.fromJson(Map<String, dynamic> json) {

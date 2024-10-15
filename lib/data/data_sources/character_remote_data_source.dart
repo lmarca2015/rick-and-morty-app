@@ -1,16 +1,22 @@
 import 'package:rick_and_morty_app/api/rick_morty_api.dart';
 import 'package:rick_and_morty_app/data/models/character_model.dart';
 
+import 'database_helper.dart';
+
 abstract class CharacterRemoteDataSource {
   Future<List<CharacterModel>> fetchCharacters(int page);
   Future<List<CharacterModel>> fetchCharactersWithName(String name);
+
+  Future<List<CharacterModel>> fetchLocalCharacters();
 }
 
 class CharacterRemoteDataSourceImpl implements CharacterRemoteDataSource {
+
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
+
   @override
   Future<List<CharacterModel>> fetchCharacters(int page) async {
     try {
-      // Agrega el parámetro de página a la URL
       final response =
           await RickMortyApi.get('/character', queryParameters: {'page': page});
 
@@ -27,11 +33,10 @@ class CharacterRemoteDataSourceImpl implements CharacterRemoteDataSource {
       throw Exception('Error al cargar los personajes: $e');
     }
   }
-  
+
   @override
   Future<List<CharacterModel>> fetchCharactersWithName(String name) async {
-        try {
-      // Agrega el parámetro de página a la URL
+    try {
       final response =
           await RickMortyApi.get('/character', queryParameters: {'name': name});
 
@@ -47,5 +52,10 @@ class CharacterRemoteDataSourceImpl implements CharacterRemoteDataSource {
     } catch (e) {
       throw Exception('Error al cargar los personajes: $e');
     }
+  }
+
+  @override
+  Future<List<CharacterModel>> fetchLocalCharacters() {
+    return _databaseHelper.getCharacters();
   }
 }
