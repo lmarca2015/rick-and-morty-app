@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:rick_and_morty_app/domain/entities/character.dart';
 
@@ -16,6 +17,7 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   late Future<bool> _isFavoriteFuture;
+  final databaseHelper = GetIt.instance<DatabaseHelper>();
 
   @override
   void initState() {
@@ -24,7 +26,6 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   Future<bool> _loadFavoriteStatus() async {
-    final databaseHelper = DatabaseHelper();
     CharacterModel? character =
         await databaseHelper.getCharacterById(widget.character.id);
     return character?.isFavorite ?? false;
@@ -36,8 +37,6 @@ class _DetailScreenState extends State<DetailScreen> {
     setState(() {
       _isFavoriteFuture = Future.value(newStatus);
     });
-
-    final databaseHelper = DatabaseHelper();
 
     final existingCharacter =
         await databaseHelper.getCharacterById(widget.character.id);
