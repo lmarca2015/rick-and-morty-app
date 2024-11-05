@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import '../../domain/entities/character.dart';
 import '../models/character_model.dart';
 
-class DatabaseHelper {
+final class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   static Database? _database;
 
